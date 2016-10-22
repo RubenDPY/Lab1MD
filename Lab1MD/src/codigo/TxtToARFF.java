@@ -16,43 +16,75 @@ public class TxtToARFF {
 
 		try{
 			
+		String path = null;	
+			
+			
 		File f = new File(args[0]);
-		while(f.exists()){
+		//while(f.exists()){
+			
+		if(f.exists()){
+			File[] fLista = f.listFiles();
+			int id=0;
+			BufferedWriter out = new BufferedWriter(new FileWriter(args[1]));
+			out.write("@relation Twenty Newsgroups\n\n");
+			out.write("@attribute id NUMERIC\n");
+			out.write("@attribute text string\n");
+			out.write("@data\n\n");
+			
+			
+			for(int x=0;x<fLista.length;x++){
 				
-			
-			if(args.length==2){
-				BufferedReader in = new BufferedReader(new FileReader(args[0]));
-				BufferedWriter out = new BufferedWriter(new FileWriter(args[1]));
-				String line;
-				String total;
-				int id=0;
-				out.write("@relation Twenty Newsgroups\n\n");
-				out.write("@attribute id NUMERIC\n");
-				out.write("@attribute text string\n");
-				out.write("@data\n\n");
-			
-				line = in.readLine();
-				total = id + ",";
-				while(!line.isEmpty()){
+				if(!fLista[x].getName().equals("TxToARFF.jar") && !fLista[x].getName().equals("prueba2.arff") ){
+					path = "C:/MD2016/";
+					path = path + fLista[x].getName();
+					System.out.println(path);
+				}
+				
+				
+				if(args.length==2){
+					
+					BufferedReader in = new BufferedReader(new FileReader(path));
+					
+					String line;
+					String total;
+					
+					
+				
 					line = in.readLine();
-				}
-				while((line = in.readLine()) != null){
-					//formato: id,'text',?
-					//elimina los char ' de los SMS porque en weka da problemas
-				    total = total + line;
-				    id++;
-				}
-				out.write(total);
-				
-				in.close();
-				out.close();
-				
-			}else{
-					System.out.println("Se necesitan dos parametros, primero el txt y segundo el archivo arff donde guardar la informacion.");
-					System.out.println("Comando esperado: java -jar getARFF.jar file.txt file.arff");
-				}
-			
+					total = id + ",";
+					while(!line.isEmpty()){
+						line = in.readLine();
+					}
+					while((line = in.readLine()) != null){
+						//formato: id,'text',?
+					    total = total + line;
+					    
+					}
+					total = total + "\n";
+					out.write(total);
+					
+					in.close();
+					
+					
+				}else{
+						System.out.println("Se necesitan dos parametros, primero el txt y segundo el archivo arff donde guardar la informacion.");
+						System.out.println("Comando esperado: java -jar getARFF.jar file.txt file.arff");
+						
+						System.out.println(args[0]);
+						System.out.println(args[1]);
+					}
+				System.out.println(id);
+				id++;
 			}
+			
+			out.close();
+		}
+		
+				
+			
+			
+			
+		//	}
 
 		}catch(Exception e){
 			e.printStackTrace();
