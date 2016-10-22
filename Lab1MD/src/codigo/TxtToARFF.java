@@ -3,7 +3,7 @@ package codigo;
 import java.io.BufferedReader;
 
 import java.io.BufferedWriter;
-
+import java.io.File;
 import java.io.FileReader;
 
 import java.io.FileWriter;
@@ -15,43 +15,43 @@ public class TxtToARFF {
 	public static void main(String[] args) {
 
 		try{
+			
+		File f = new File(args[0]);
+		while(f.exists()){
+				
+			
 			if(args.length==2){
 				BufferedReader in = new BufferedReader(new FileReader(args[0]));
 				BufferedWriter out = new BufferedWriter(new FileWriter(args[1]));
 				String line;
+				String total;
 				int id=0;
-				out.write("@relation sms_spam\n\n");
+				out.write("@relation Twenty Newsgroups\n\n");
 				out.write("@attribute id NUMERIC\n");
 				out.write("@attribute text string\n");
-				out.write("@attribute class {ham,spam}\n\n");
 				out.write("@data\n\n");
-
-				//archivo test_blind
-
-				if(args[0].contains("test_blind")){
-					while((line = in.readLine()) != null){
-						//formato: id,'text',?
-						//elimina los char ' de los SMS porque en weka da problemas
-					    out.write(id+","+"'"+line.substring(4,line.length()).replace("'", "")+"',?\n");
-					    id++;
-					}
+			
+				line = in.readLine();
+				total = id + ",";
+				while(!line.isEmpty()){
+					line = in.readLine();
 				}
-
-				//archivos train y dev
-
-				else{
-					while((line = in.readLine()) != null){
-						//formato: id,'text',class
-						//elimina los char ' de los SMS porque en weka da problemas
-					    out.write(id+","+"'"+line.substring(4,line.length()).replace("'", "")+"',"+line.substring(0,4)+"\n");
-					    id++;
-					}
-				}	
+				while((line = in.readLine()) != null){
+					//formato: id,'text',?
+					//elimina los char ' de los SMS porque en weka da problemas
+				    total = total + line;
+				    id++;
+				}
+				out.write(total);
+				
 				in.close();
 				out.close();
+				
 			}else{
-				System.out.println("Se necesitan dos parametros, primero el txt y segundo el archivo arff donde guardar la informacion.");
-				System.out.println("Comando esperado: java -jar getARFF.jar file.txt file.arff");
+					System.out.println("Se necesitan dos parametros, primero el txt y segundo el archivo arff donde guardar la informacion.");
+					System.out.println("Comando esperado: java -jar getARFF.jar file.txt file.arff");
+				}
+			
 			}
 
 		}catch(Exception e){
