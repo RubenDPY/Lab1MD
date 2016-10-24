@@ -26,10 +26,10 @@ public class TxtToARFF {
 			File[] fLista = f.listFiles();
 			int id=0;
 			BufferedWriter out = new BufferedWriter(new FileWriter(args[1]));
-			out.write("@relation Twenty Newsgroups\n\n");
+			out.write("@relation TwentyNewsgroups\n\n");
 			out.write("@attribute id NUMERIC\n");
-			out.write("@attribute text string\n");
-			out.write("@data\n\n");
+			out.write("@attribute text string\n\n");
+			out.write("@data\n");
 			
 			
 			for(int x=0;x<fLista.length;x++){
@@ -46,22 +46,27 @@ public class TxtToARFF {
 					BufferedReader in = new BufferedReader(new FileReader(path));
 					
 					String line;
-					String total;
+					String total = "";
 					
 					
 				
 					line = in.readLine();
-					total = id + ",";
+					//total = id + ",'";
 					while(!line.isEmpty()){
 						line = in.readLine();
 					}
 					while((line = in.readLine()) != null){
 						//formato: id,'text',?
+						//System.out.println(line);
+						//line.replace("'", "");
+						//System.out.println(line);
 					    total = total + line;
 					    
 					}
-					total = total + "\n";
-					out.write(total);
+					//total = total + "'\n";
+					System.out.println(total);
+					out.write(id+","+"'"+total.replaceAll("'", "")+"',"+"\n");
+					//out.write(total);
 					
 					in.close();
 					
