@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.FileReader;
 
 import java.io.FileWriter;
+import java.util.ArrayList;
 
 
 
@@ -65,6 +66,7 @@ public class TxtToARFF {
 					}
 					//total = total + "'\n";
 					System.out.println(total);
+					total = filtroCaracteres(total);
 					out.write(id+","+"'"+total.replaceAll("'", "")+"',"+"\n");
 					//out.write(total);
 					
@@ -95,4 +97,15 @@ public class TxtToARFF {
 			e.printStackTrace();
 		}
 	}
+	
+	private static String filtroCaracteres(String total) {
+		// TODO Auto-generated method stub
+		String c[] = {};
+		String r[] = {};
+		for (int i = 0; i < c.length; i++) {
+			total.replaceAll(c[i], r[i]);
+		} 
+		return total;
+	}
+
 }
