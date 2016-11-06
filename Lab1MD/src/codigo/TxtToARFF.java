@@ -4,16 +4,22 @@ import java.io.BufferedReader;
 
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 
 import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
+
+import weka.core.Instances;
+import weka.core.converters.ArffSaver;
+import weka.core.converters.ConverterUtils.DataSource;
 
 
 
 public class TxtToARFF {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 
 		try{
 			
@@ -35,14 +41,14 @@ public class TxtToARFF {
 			
 			for(int x=0;x<fLista.length;x++){
 				
-				if(!fLista[x].getName().equals("TxToARFF.jar") && !fLista[x].getName().equals("prueba2.arff") ){
+				if(!fLista[x].getName().equals("TxToARFF.jar") && !fLista[x].getName().equals("prueba.arff") ){
 					path = "C:/MD2016/";
 					path = path + fLista[x].getName();
 					System.out.println(path);
 				}
 				
 				
-				if(args.length==2){
+				if(args.length==3){
 					
 					BufferedReader in = new BufferedReader(new FileReader(path));
 					
@@ -74,8 +80,8 @@ public class TxtToARFF {
 					
 					
 				}else{
-						System.out.println("Se necesitan dos parametros, primero el txt y segundo el archivo arff donde guardar la informacion.");
-						System.out.println("Comando esperado: java -jar getARFF.jar file.txt file.arff");
+						System.out.println("Se necesitan tres parametros, primero el txt, segundo el archivo arff donde guardar la informacion y tercero la ruta donde guardar  aplicado el tfidf.");
+						System.out.println("Comando esperado: java -jar getARFF.jar file.txt file.arff fileTFIDF.arff");
 						
 						System.out.println(args[0]);
 						System.out.println(args[1]);
@@ -96,6 +102,12 @@ public class TxtToARFF {
 		}catch(Exception e){
 			e.printStackTrace();
 		}
+		
+		Instances data = DataSource.read(args[1]);
+		Preprocess p = new Preprocess(data);
+		p.TF_IDF();
+		guardarARFFTF(p.getData(), args[2]);
+		p.getData();
 	}
 	
 	private static String filtroCaracteres(String total) {
@@ -106,6 +118,20 @@ public class TxtToARFF {
 			total.replaceAll(c[i], r[i]);
 		} 
 		return total;
+	}
+	
+	public static void guardarARFFTF(Instances i, String Ruta){
+		Instances dataSet= i;
+		ArffSaver saver = new ArffSaver();
+		saver.setInstances(dataSet);
+		try{
+			File archivo = new File(Ruta);
+			saver.setFile(archivo);
+			saver.setDestination(new FileOutputStream(archivo));
+			saver.writeBatch();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 }
