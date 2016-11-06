@@ -236,7 +236,7 @@ public class KMeans {
 			if(clusterAux == clusters){
 				chivato = true;
 			}
-			
+						
 			clusterAux = clusters;
 			System.out.println("Primera columna");
 			for (int i = 0; i < data.numInstances(); i++) {
@@ -272,7 +272,7 @@ public class KMeans {
 							System.out.println("La isntancia que metemos es: " + centroide);
 							aux++;
 						}else{
-							for (int l = 0; l < 100; l++) {
+							for (int l = 1; l < 100; l++) {
 								//System.out.println("Nombre del atributo: " + centroide.attribute(l));
 								//System.out.println("Valor antiguo del atributo : " + Double.parseDouble(centroide.toString(centroide.attribute(l))));
 								//System.out.println("Nuevo valor: " + Double.parseDouble(data.instance(i).toString(data.instance(i).attribute(l))));
