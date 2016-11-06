@@ -1,5 +1,7 @@
 package codigo;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Random;
@@ -14,7 +16,7 @@ public class KMeans {
 	
 	public static void main(String[] args) throws Exception {
 		
-		//Formato--> Ruta de arffTFIDF + K + Tipo de inicializacion + Numero de iteraciones
+		//Formato--> Ruta de arffTFIDF + K + Tipo de inicializacion + Numero de iteraciones + direccion de archivo final
 		
 		if(args[2].equals("a")){
 			Instances data = DataSource.read(args[0]);
@@ -189,11 +191,13 @@ public class KMeans {
 			/////////////////////////////////
 			int vueltas = 0;
 			
-			while(!chivato && vueltas < 1){
+			Instance nuevosCentroides[] = new Instance[k];
+			boolean clusters[][] = null;
+			while(!chivato && vueltas < 2){
 				
 			
 			//Inicializacion a False de la matriz
-			boolean clusters[][] = new boolean[data.numInstances()][k];			
+			clusters = new boolean[data.numInstances()][k];			
 			
 			for (int i = 0; i < k; i++) {
 				for (int j = 0; j < data.numInstances(); j++) {
@@ -221,13 +225,17 @@ public class KMeans {
 						
 						double res2 = a - b;
 						res2 = res2 * res2;						
-						distC = distC + res2;						
+						distC = distC + res2;
 						}
-					//System.out.println("La distancia C es: ");
+					System.out.println("La distancia C es: " + distC);
 					if(distC < distF){
 						distF = distC;
 						donde = j;
-						}					
+						}
+					
+					if(data.instance(i) == centroidesFin[j]){
+						clusters[i][j] = true;
+					}
 				}
 				
 				clusters[i][donde] = true;
@@ -238,27 +246,7 @@ public class KMeans {
 			}
 						
 			clusterAux = clusters;
-			System.out.println("Primera columna");
-			for (int i = 0; i < data.numInstances(); i++) {
-				if(clusters[i][0]){
-					System.out.println(clusters[i][0]);
-				}
-			}
-			System.out.println("Segunda columna");
-			for (int j = 0; j < data.numInstances(); j++) {
-				if(clusters[j][1]){
-					System.out.println(clusters[j][1]);
-				}
-			}
-			System.out.println("Tercera columna");
-			for (int i2 = 0; i2 < data.numInstances(); i2++) {
-				if(clusters[i2][2]){
-					System.out.println(clusters[i2][2]);
-				}
-			}
-			
-			
-			Instance nuevosCentroides[] = new Instance[k];
+						
 			double aux = 0.0;
 			Instance centroide = null;
 			//Creamos k listas donde separar por cluster
@@ -290,47 +278,41 @@ public class KMeans {
 				nuevosCentroides[j] = centroide;
 				System.out.println("Sumo " + j);
 				
+			}/*
+			for (int i = 0; i < k; i++) {
+				System.out.println("Contenido de centroide Viejo Nº: " + i + " = "+ centroidesFin[i]);
 			}
 			for (int i = 0; i < k; i++) {
 				System.out.println("Contenido de centroide Nº: " + i + " = "+ nuevosCentroides[i]);
-			}
+			}*/
+			
+			
+			centroidesFin = nuevosCentroides;
 			vueltas++;
-		}
-			/*
-			for (int i = 0; i < k; i++) {
+		}			
+			/*for (int i = 0; i < k; i++) {
+				System.out.println("Contenido de centroide Nº: " + i + " = "+ nuevosCentroides[i]);
+			}*/
+			
+			
+			//Montamos el archivo a imprimir
+			BufferedWriter out = new BufferedWriter(new FileWriter(args[3]));
+			out.write("La relacion de archivos es la siguiente\n\n");
+			String escritura = "";
+			String clusterEscri = "";
+			
+			for (int i = 0; i < data.numInstances(); i++) {
 				
-				System.out.println(clusters[2900][i]);
+				for (int l = 0; l < k; l++) {
+					if(clusters[i][l]){
+						System.out.println("El cluster es: " + l);
+						clusterEscri = "" + l;
+					}
+				}
+				escritura = "La instancia Nº: " + i + " pertenece al cluster: " + clusterEscri + ". Su contenido es el siguiente: " + data.instance(i) + "\n";
+				out.write(escritura);
 			}
-
-			
-			
-			
-			System.out.println("La distancia X es: " + mayores[0]);
-			System.out.println("Corresponde a: " + distanciaA[0] + " " + distanciaB[0]);
-			
-			for (int j = 1; j < 100; j++) {
-				
-				//System.out.println("Valor del atributo a " + centroides.get(j2).toString(centroides.get(j2).attribute(j)));
-				//System.out.println(centroides.get(j2).attribute(j).toString());
-			
-				double a = Double.parseDouble(centroides.get((int) distanciaA[0]).toString(centroides.get((int) distanciaA[0]).attribute(j)));
-				double b = Double.parseDouble(centroides.get((int) distanciaB[0]).toString(centroides.get((int) distanciaB[0]).attribute(j)));
-				
-				//disAux = sqrt(a^2 - b^2);
-				//double res = (a * a) - (b * b);
-				double res = a - b;
-				res = res * res;
-				//res = Math.abs(res);
-				
-				disT = disT + res;	
-			}
-			disT = Math.sqrt(disT);
-			System.out.println("La supuesta distancia que deberia ser igual es: " + disT);
-
-			
-			System.out.println("La distancia X es: " + mayores[8]);
-			System.out.println("La distancia X es: " + mayores[6]);
-			*/
+			out.close();		
 		}
 	}
 		
