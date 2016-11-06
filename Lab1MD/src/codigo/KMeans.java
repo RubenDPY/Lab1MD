@@ -14,7 +14,7 @@ public class KMeans {
 	
 	public static void main(String[] args) throws Exception {
 		
-		//Formato--> Ruta de arffTFIDF + K + Tipo de inicializacion
+		//Formato--> Ruta de arffTFIDF + K + Tipo de inicializacion + Numero de iteraciones
 		
 		if(args[2].equals("a")){
 			Instances data = DataSource.read(args[0]);
@@ -177,6 +177,21 @@ public class KMeans {
 			}
 			}
 			
+			boolean clusterAux[][] = new boolean[data.numInstances()][k];
+			for (int i = 0; i < k; i++) {
+				for (int j = 0; j < data.numInstances(); j++) {
+					clusterAux[j][i] = false;
+				}
+			}
+			boolean chivato = false;
+			/////////////////////////////////
+			//WHILEEEEEEEEEEEEEEEEEEEEEEEEEEE
+			/////////////////////////////////
+			int vueltas = 0;
+			
+			while(!chivato && vueltas < 1){
+				
+			
 			//Inicializacion a False de la matriz
 			boolean clusters[][] = new boolean[data.numInstances()][k];			
 			
@@ -218,26 +233,51 @@ public class KMeans {
 				clusters[i][donde] = true;
 				
 			}
+			if(clusterAux == clusters){
+				chivato = true;
+			}
+			
+			clusterAux = clusters;
+			System.out.println("Primera columna");
+			for (int i = 0; i < data.numInstances(); i++) {
+				if(clusters[i][0]){
+					System.out.println(clusters[i][0]);
+				}
+			}
+			System.out.println("Segunda columna");
+			for (int j = 0; j < data.numInstances(); j++) {
+				if(clusters[j][1]){
+					System.out.println(clusters[j][1]);
+				}
+			}
+			System.out.println("Tercera columna");
+			for (int i2 = 0; i2 < data.numInstances(); i2++) {
+				if(clusters[i2][2]){
+					System.out.println(clusters[i2][2]);
+				}
+			}
+			
 			
 			Instance nuevosCentroides[] = new Instance[k];
 			double aux = 0.0;
+			Instance centroide = null;
 			//Creamos k listas donde separar por cluster
 			for (int j = 0; j < k; j++) {
 				aux = 0;
-				Instance centroide = null;
+				centroide = null;
 				for (int i = 0; i < data.numInstances(); i++) {
 					if(clusters[i][j]){
-						if(aux == 0){
+						if(centroide == null){
 							centroide = data.instance(i);
+							System.out.println("La isntancia que metemos es: " + centroide);
 							aux++;
 						}else{
-							System.out.println("Hola");
 							for (int l = 0; l < 100; l++) {
-								System.out.println("Nombre del atributo: " + centroide.attribute(l));
-								System.out.println("Valor antiguo del atributo : " + Double.parseDouble(centroide.toString(centroide.attribute(l))));
-								System.out.println("Nuevo valor: " + Double.parseDouble(data.instance(i).toString(data.instance(i).attribute(l))));
+								//System.out.println("Nombre del atributo: " + centroide.attribute(l));
+								//System.out.println("Valor antiguo del atributo : " + Double.parseDouble(centroide.toString(centroide.attribute(l))));
+								//System.out.println("Nuevo valor: " + Double.parseDouble(data.instance(i).toString(data.instance(i).attribute(l))));
 								centroide.setValue(centroide.attribute(l), Double.parseDouble(centroide.toString(centroide.attribute(l))) + Double.parseDouble(data.instance(i).toString(data.instance(i).attribute(l))));
-								System.out.println("Media: " + aux);								
+								//System.out.println("Media: " + aux);								
 							}
 							aux++;
 						}
@@ -247,8 +287,15 @@ public class KMeans {
 						centroide.setValue(centroide.attribute(l2), Double.parseDouble(centroide.toString(centroide.attribute(l2))) / aux );
 					}	
 				}
+				nuevosCentroides[j] = centroide;
+				System.out.println("Sumo " + j);
 				
 			}
+			for (int i = 0; i < k; i++) {
+				System.out.println("Contenido de centroide Nº: " + i + " = "+ nuevosCentroides[i]);
+			}
+			vueltas++;
+		}
 			/*
 			for (int i = 0; i < k; i++) {
 				
